@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "target": "ES2022",
+        "rootDir": "./",
+        "skipLibCheck": true,
+        "outDir": "./dist",
+        "typeRoots": ["./typings/*", "./node_modules/@types"],
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "removeComments": true,
+        "declaration": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "lib": [
+            "ES2022",
+        ],
+        "useDefineForClassFields": false,
+        "baseUrl": "./",
+        "skipDefaultLibCheck": true,
+        "sourceMap": true,
+        "inlineSources": true,
+        "strict": true,
+        "paths": {},
+        "types": ["node", "jest"]
+    },
+    "ts-node": {
+        "files": true,
+        "require": ["tsconfig-paths/register"]
+    },
+    "include": ["src/**/*", "typings/**/*", "e2e/**/*"],
+    "exclude": ["node_modules", "dist"]
+}

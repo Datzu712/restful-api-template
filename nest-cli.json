@@ -1,0 +1,7 @@
+{
+    "comilerOptions": {
+        "builder": "swc",
+        "typeCheck": true
+    }
+}
+  
