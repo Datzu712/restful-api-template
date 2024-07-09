@@ -8,7 +8,7 @@ import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fa
 import { BaseExceptionFilter, HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { setupNestErrorHandler as sentrySetupNestErrorHandler } from '@sentry/nestjs';
 
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app.module';
 
 const logger = new Logger('Dose', {
     logLevels: ['debug', 'error', 'warn', 'verbose', 'log'],
@@ -25,7 +25,7 @@ const logger = new Logger('Dose', {
 import './instrument';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 8080;
     const host = process.env.HOST || getIP();
 
     const fastifyInstance = fastify({
