@@ -24,7 +24,11 @@
         "sourceMap": true,
         "inlineSources": true,
         "strict": true,
-        "paths": {},
+        "paths": {
+            "@app/*": ["src/*"],
+            "@test/*": ["test/*"],
+            "@typings/*": ["typings/*"]
+        },
         "types": ["node", "jest"]
     },
     "ts-node": {
