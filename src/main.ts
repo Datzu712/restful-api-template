@@ -23,6 +23,7 @@ const logger = new Logger('Dose', {
 });
 
 import './instrument';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
     const port = process.env.PORT || 3000;
     const host = process.env.HOST || getIP();
@@ -43,6 +44,15 @@ async function bootstrap() {
     );
     const { httpAdapter } = app.get(HttpAdapterHost);
     sentrySetupNestErrorHandler(app, new BaseExceptionFilter(httpAdapter));
+
+    const config = new DocumentBuilder()
+        .setTitle('RESTful API template with NestJS & Fastify')
+        .setDescription('Amazing description')
+        .setVersion('1.0')
+        .addTag('api')
+        .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
 
     await app.listen(port, host);
     logger.log(`Server running on ${await app.getUrl()}`);
