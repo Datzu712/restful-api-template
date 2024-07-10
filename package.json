@@ -51,6 +51,7 @@
         "@fastify/compress": "^7.0.3",
         "@fastify/csrf-protection": "^6.4.1",
         "@fastify/helmet": "^11.1.1",
+        "@fastify/multipart": "^8.3.0",
         "@fastify/static": "^7.0.4",
         "@nestjs/common": "^10.3.10",
         "@nestjs/core": "^10.3.10",
@@ -63,6 +64,7 @@
         "dotenv": "^16.4.5",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.1",
-        "useful-logger": "^0.0.2"
+        "useful-logger": "^0.0.2",
+        "xlsx": "^0.18.5"
     }
 }

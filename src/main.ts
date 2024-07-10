@@ -2,6 +2,7 @@ import { Logger } from 'useful-logger';
 import { getIP } from '@app/helpers';
 import fastify from 'fastify';
 import helmet from '@fastify/helmet';
+import multipart from '@fastify/multipart';
 import compression from '@fastify/compress';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -25,6 +26,7 @@ const logger = new Logger('Dose', {
 });
 
 import './instrument';
+import { VersioningType } from '@nestjs/common';
 async function bootstrap() {
     const port = process.env.PORT || 8080;
     const host = process.env.HOST || getIP();
@@ -35,6 +37,7 @@ async function bootstrap() {
     await fastifyInstance.register(helmet, { contentSecurityPolicy: false });
     await fastifyInstance.register(fastifyCsrf);
     await fastifyInstance.register(compression);
+    await fastifyInstance.register(multipart);
 
     fastifyInstance.addHook('onResponse', (request, reply, done) => {
         request.raw.statusCode = reply.statusCode;
@@ -51,6 +54,9 @@ async function bootstrap() {
             logger,
         },
     );
+    app.enableVersioning({
+        type: VersioningType.URI,
+    });
     const { httpAdapter } = app.get(HttpAdapterHost);
     sentrySetupNestErrorHandler(app, new BaseExceptionFilter(httpAdapter));
 
@@ -61,7 +67,7 @@ async function bootstrap() {
         .addTag('api')
         .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('docs', app, document);
 
     await app.listen(port, host);
     logger.log(`Server running on ${await app.getUrl()}`);
