@@ -7,13 +7,15 @@ import fastifyCsrf from '@fastify/csrf-protection';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { BaseExceptionFilter, HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { setupNestErrorHandler as sentrySetupNestErrorHandler } from '@sentry/nestjs';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { requestLogger } from '@app/helpers';
 
 import { AppModule } from './modules/app.module';
 
 const logger = new Logger('Dose', {
     logLevels: ['debug', 'error', 'warn', 'verbose', 'log'],
     folderPath: './logs',
-    allowConsole: ['warn', 'error', 'log'],
+    allowConsole: ['warn', 'error', 'log', 'debug'],
     allowWriteFiles: true,
     outputTemplate: '{timestamp} - {level} {context} {message}',
     indents: {
@@ -23,7 +25,6 @@ const logger = new Logger('Dose', {
 });
 
 import './instrument';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
     const port = process.env.PORT || 8080;
     const host = process.env.HOST || getIP();
@@ -35,6 +36,14 @@ async function bootstrap() {
     await fastifyInstance.register(fastifyCsrf);
     await fastifyInstance.register(compression);
 
+    fastifyInstance.addHook('onResponse', (request, reply, done) => {
+        request.raw.statusCode = reply.statusCode;
+        requestLogger(request, Math.floor(reply.elapsedTime / 1000));
+        done();
+    });
+    fastifyInstance.addHook('onSend', async (request, _reply, payload) => {
+        Logger.debug(`${payload} (${request.id})`, 'FastifyOnSend');
+    });
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter(fastifyInstance as never),
